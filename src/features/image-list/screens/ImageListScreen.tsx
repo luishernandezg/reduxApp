@@ -13,6 +13,7 @@ import {useAppDispatch, useAppSelector} from '../../../app/hooks';
 import {fetchImages, selectImageList} from '../redux/imageListSlice';
 import ImageItem from '../components/ImageItem';
 import {useEffect} from 'react';
+import GenericErrrorScreen from '../../../shared/screens/GenericErrrorScreen';
 
 const ImageListScreen = () => {
   const imageList = useAppSelector(selectImageList);
@@ -27,8 +28,35 @@ const ImageListScreen = () => {
   const handleGetListImage = () => {
     dispatch(fetchImages());
   };
-  return (
-    <View>
+
+  const screenBody = () => {
+    switch (imageList.status) {
+      case 'idle':
+        return listaView();
+      case 'succeeded':
+        return listaView();
+      case 'loading':
+        return (
+          <ActivityIndicator
+            size="large"
+            style={styles.spinner}
+            color="#AEAEAE"
+          />
+        );
+      case 'failed':
+        return (
+          <GenericErrrorScreen
+            message={imageList.error ?? ''}
+            action={() => console.log('')}
+          />
+        );
+      default:
+        return; /* empty div maybe */
+    }
+  };
+
+  const listaView = () => {
+    return (
       <FlatList
         data={imageList.listImage}
         keyExtractor={image => String(image.id)}
@@ -45,8 +73,10 @@ const ImageListScreen = () => {
           )
         }
       />
-    </View>
-  );
+    );
+  };
+
+  return <>{screenBody()}</>;
 };
 
 const styles = StyleSheet.create({

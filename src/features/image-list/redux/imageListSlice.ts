@@ -56,7 +56,10 @@ export const imageListSlice = createSlice({
         state.listImage = action.payload;
       })
       .addCase(fetchImages.rejected, (state, action) => {
-        state.status = 'succeeded';
+        state.status = 'failed';
+        console.log('ERROR - fetchImages.rejected: ' + action.error.code);
+        console.log('ERROR - fetchImages.rejected: ' + action.error.message);
+        console.log('ERROR - fetchImages.rejected: ' + action.error.name);
         state.error = action.error.message;
       });
   },
