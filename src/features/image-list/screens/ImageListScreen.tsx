@@ -6,50 +6,57 @@ import {
   Image,
   ScrollView,
   Button,
+  FlatList,
+  Platform,
 } from 'react-native';
 import {useAppDispatch, useAppSelector} from '../../../app/hooks';
 import {fetchImages, selectImageList} from '../redux/imageListSlice';
+import ImageItem from '../components/ImageItem';
+import {useEffect} from 'react';
 
 const ImageListScreen = () => {
   const imageList = useAppSelector(selectImageList);
   const dispatch = useAppDispatch();
 
+  useEffect(() => {
+    // llamado al api
+    console.log('useEfect');
+    dispatch(fetchImages());
+  }, []);
+
   const handleGetListImage = () => {
     dispatch(fetchImages());
   };
   return (
-    <ScrollView>
-      <View style={{height: 15}} />
-      <Button title="Get Data" onPress={handleGetListImage}></Button>
-      {imageList.status == 'loading' && (
-        <ActivityIndicator size={'large'} style={{alignSelf: 'center'}} />
-      )}
-      {imageList.listImage.map(value => {
-        return (
-          <View key={value.id}>
-            <Text>{value.title}</Text>
-            <Image
-              source={{uri: value.thumbnailUrl}}
-              style={{
-                width: 120,
-                height: 120,
-              }}></Image>
-          </View>
-        );
-      })}
-    </ScrollView>
+    <View>
+      <FlatList
+        data={imageList.listImage}
+        keyExtractor={image => String(image.id)}
+        renderItem={({item}) => <ImageItem image={item} />}
+        ListFooterComponent={
+          imageList.status == 'loading' ? (
+            <ActivityIndicator
+              size="large"
+              style={styles.spinner}
+              color="#AEAEAE"
+            />
+          ) : (
+            <></>
+          )
+        }
+      />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
+  flatListContentContainer: {
+    paddingHorizontal: 5,
+    paddingTop: Platform.OS === 'android' ? 30 : 0,
   },
-  horizontal: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    padding: 10,
+  spinner: {
+    marginTop: 20,
+    marginBottom: Platform.OS === 'android' ? 60 : 60,
   },
 });
 
