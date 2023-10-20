@@ -24,6 +24,9 @@ const CounterScreen = () => {
   const handleNavigateToScreenTwo = () => {
     navigation.navigate('ImageList');
   };
+  const handleNavigateToForm = () => {
+    navigation.navigate('Form');
+  };
   // redux
   const [incrementAmount, setIncrementAmount] = useState('2');
 
@@ -79,8 +82,11 @@ const CounterScreen = () => {
           </View>
         </View>
         <Button
-          title="Navigate screen 2"
+          title="Navigate to list"
           onPress={handleNavigateToScreenTwo}></Button>
+        <Button
+          title="Navigate to form"
+          onPress={handleNavigateToForm}></Button>
       </View>
     </View>
   );
